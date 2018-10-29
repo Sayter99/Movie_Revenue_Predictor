@@ -13,16 +13,24 @@ def dropMissingValues(mergedData):
 def autofill(mergedData, method):
     pass
 
-def cast2main(mergedData):
-    main = []
-    for i in mergedData.index.values:
-        cast = json.loads(mergedData.ix[i]['cast'])
-        if len(cast) >= 2:
-            first = cast[0]['name']
-            second = cast[1]['name']
-            main.append(first + ', ' + second)
-        elif len(cast) >= 1:
-            main.append(first)
-        else:
-            main.append('N/A')
-    mergedData['main'] = main
+def cast2main(s):
+    cast = json.loads(s)
+    if len(cast) >= 2:
+        first = cast[0]['name']
+        second = cast[1]['name']
+        res = first + ', ' + second
+    elif len(cast) >= 1:
+        first = cast[0]['name']
+        res = first
+    else:
+        res = 'N/A'
+    return res
+
+def crew2director(s):
+    cast = json.loads(s)
+    res = 'N/A'
+    for i in cast:
+        if i['job'] == 'Director':
+            res = i['name']
+            break
+    return res
