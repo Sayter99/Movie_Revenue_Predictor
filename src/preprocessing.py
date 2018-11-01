@@ -15,15 +15,20 @@ def autofill(mergedData, method):
 
 def cast2main(s):
     cast = json.loads(s)
-    if len(cast) >= 2:
+    if len(cast) >= 3:
         first = cast[0]['name']
         second = cast[1]['name']
-        res = first + ', ' + second
+        third = cast[2]['name']
+        res = first + ', ' + second + ', ' + third
+    elif len(cast) >= 2:
+        first = cast[0]['name']
+        second = cast[1]['name']
+        res = first + ', ' + second + ', ' + 'N/A'
     elif len(cast) >= 1:
         first = cast[0]['name']
-        res = first
+        res = first + ', N/A, N/A'
     else:
-        res = 'N/A'
+        res = 'N/A, N/A, N/A'
     return res
 
 def crew2director(s):
