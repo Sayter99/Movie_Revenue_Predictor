@@ -26,6 +26,9 @@ class AcquireJson():
         working_tag = working_tag.replace('-', '')
         working_tag = working_tag.replace('\'', '')
         working_tag = working_tag.replace(':', '')
+        working_tag = working_tag.replace(',', '')
+        working_tag = working_tag.replace('·', '')
+        working_tag = working_tag.replace('&', '')
         tags = self.acquired.get(working_tag, 0)
         if tags != 0:
             print ('INFO: Tags of ' + working_tag + ' = ' + str(tags))
