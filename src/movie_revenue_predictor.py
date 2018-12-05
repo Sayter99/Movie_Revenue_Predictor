@@ -2,17 +2,17 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import preprocessing
+import clustering
 import sys
 from utilities.instagram_data import AcquireJson
 from pathlib import Path
-from sklearn.cluster import *
-from sklearn.model_selection import *
 
 def preprocess():
     a = AcquireJson()
     integratedCSV = Path('datasets/integrated.csv')
     integratedRefilledCSV = Path('datasets/integratedRefilled.csv')
     gpCSV = Path('datasets/gp.csv')
+    preprocessed = Path('datasets/preprocessed.csv')
     if not integratedCSV.exists():
         creditsData = pd.read_csv('datasets/tmdb_5000_credits.csv')
         moviesData = pd.read_csv('datasets/tmdb_5000_movies.csv')
@@ -43,7 +43,7 @@ def preprocess():
         mergedData['genres'] = mergedData['genres'].apply(lambda x: preprocessing.genre2str(x))
         mergedData['production_companies'] = mergedData['production_companies'].apply(lambda x: preprocessing.pc2main(x))
         mergedData.to_csv('datasets/gp.csv')
-    else:
+    elif not preprocessed.exists():
         df = pd.read_csv('datasets/gp.csv')
         df = preprocessing.dropMissingValues(df)
         genres = set(df['genres'].tolist())
@@ -78,4 +78,9 @@ def preprocess():
         df.iloc[:, 1:].to_csv('datasets/preprocessed.csv')
         pass
 
-preprocess()
+# preprocess()
+
+df = pd.read_csv("datasets/preprocessed.csv")
+# Based on the different column in array(a1, a2, genre_point......)
+X = df['genre_point'].values.reshape(-1, 1).tolist()
+clustering.DBSCANClustering(X, 0.05, 200)
