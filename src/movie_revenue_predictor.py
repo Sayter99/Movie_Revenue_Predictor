@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import preprocessing
 import clustering
+import classification
 import sys
 from utilities.instagram_data import AcquireJson
 from pathlib import Path
@@ -82,5 +83,16 @@ def preprocess():
 
 df = pd.read_csv("datasets/preprocessed.csv")
 # Based on the different column in array(a1, a2, genre_point......)
-X = df['genre_point'].values.reshape(-1, 1).tolist()
-clustering.DBSCANClustering(X, 0.05, 200)
+#X = df['genre_point'].values.reshape(-1, 1).tolist()
+#clustering.DBSCANClustering(X, 0.05, 200)
+
+X_Attributes = ['budget', 'actor1_hashtags', 'actor2_hashtags',
+                'actor3_hashtags', 'director_hashtags', 'movie_hashtags',
+                'genre_point', 'director_point', 'actor_point']
+for x in X_Attributes:
+    print(df[x].dtype)
+    
+Y_Attributes = ['revenue']
+
+SVMClassifier = classification.SVMClassification(df, X_Attributes, Y_Attributes)
+print(SVMClassifier.predict([[0,0,0,0,0,0,0,0,0]]))
