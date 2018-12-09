@@ -5,6 +5,7 @@ import preprocessing
 import clustering
 import classification
 import sys
+from sklearn.model_selection import train_test_split
 from utilities.instagram_data import AcquireJson
 from pathlib import Path
 
@@ -89,10 +90,15 @@ df = pd.read_csv("datasets/preprocessed.csv")
 X_Attributes = ['budget', 'actor1_hashtags', 'actor2_hashtags',
                 'actor3_hashtags', 'director_hashtags', 'movie_hashtags',
                 'genre_point', 'director_point', 'actor_point']
-for x in X_Attributes:
-    print(df[x].dtype)
-    
+
 Y_Attributes = ['revenue']
 
-SVMClassifier = classification.SVMClassification(df, X_Attributes, Y_Attributes)
-print(SVMClassifier.predict([[0,0,0,0,0,0,0,0,0]]))
+train, test = train_test_split(df, test_size=0.08)
+#SVMClassifier = classification.SVMClassification(train, X_Attributes, Y_Attributes)
+#test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
+#print(SVMClassifier.predict(test_list)-real_revenue)
+
+MultiLayerClassifier = classification.BayesianClassification(train, X_Attributes, Y_Attributes)
+test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
+test_result = MultiLayerClassifier.predict(test_list)
+classification.plotting(test_result, real_revenue)
