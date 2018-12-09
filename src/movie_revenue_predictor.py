@@ -88,8 +88,8 @@ df = pd.read_csv("datasets/preprocessed.csv")
 #clustering.DBSCANClustering(X, 0.05, 200)
 
 X_Attributes = ['budget', 'actor1_hashtags', 'actor2_hashtags',
-                'actor3_hashtags', 'director_hashtags', 'movie_hashtags',
-                'genre_point', 'director_point', 'actor_point']
+                'actor3_hashtags', 'director_hashtags', 'genre_point',
+                'director_point', 'actor_point']
 
 Y_Attributes = ['revenue']
 
@@ -98,7 +98,8 @@ train, test = train_test_split(df, test_size=0.08)
 #test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
 #print(SVMClassifier.predict(test_list)-real_revenue)
 
-MultiLayerClassifier = classification.BayesianClassification(train, X_Attributes, Y_Attributes)
+#Bagging, Boosting, 0 = DecisionTreeClassifier, 1 = MLPClassifier, 2 = svm, 3 = Bayesian
+MultiLayerClassifier = classification.BoostingClassification(train, X_Attributes, Y_Attributes, 4)
 test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
 test_result = MultiLayerClassifier.predict(test_list)
 classification.plotting(test_result, real_revenue)

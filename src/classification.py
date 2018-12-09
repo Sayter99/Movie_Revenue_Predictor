@@ -4,6 +4,26 @@ from sklearn import tree
 from sklearn import linear_model
 from sklearn.neural_network import MLPClassifier
 import matplotlib.pyplot as plt
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn import model_selection
+from sklearn.ensemble import BaggingClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import RandomForestClassifier
+
+def chooseMethod(number):
+    if number == 0:
+        return DecisionTreeClassifier()
+    elif number == 1:
+        return MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
+    elif number == 2:
+        return svm.SVC()
+    elif number == 3:
+        return linear_model.BayesianRidge()
+    elif number == 4:
+        return RandomForestClassifier(n_estimators=18)
 
 def generateXYLists(df, x_attributes, y_attributes):
     length = len(df[x_attributes[0]])
@@ -47,6 +67,28 @@ def BayesianClassification(df, x_attributes, y_attributes):
     reg = linear_model.BayesianRidge()
     reg.fit(x_list, y_list)
     return reg
+
+#Bagging-Algorithm
+def BaggingClassification(df, x_attributes, y_attributes, classifier):
+    x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
+    #Change classification algorithm in here
+    cart = chooseMethod(classifier)
+    bagging = BaggingClassifier(base_estimator=cart, max_samples=0.6, max_features=0.5).fit(x_list, y_list)
+    #bagging = BaggingClassifier(KNeighborsClassifier(),max_samples=0.5, max_features=0.5).fit(x_list, y_list)
+    return bagging
+
+#Boosting-Algorithm
+def BoostingClassification(df, x_attributes, y_attributes, classifier):
+    x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
+    cart = chooseMethod(classifier)
+    clf = AdaBoostClassifier(base_estimator=cart, n_estimators=8).fit(x_list, y_list)
+    return clf
+
+#RandomForest-Algorithm
+def RandomforestClassification(df, x_attributes, y_attributes):
+    x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
+    clf = RandomForestClassifier(n_estimators=15).fit(x_list, y_list)
+    return clf
 
 #Draw a picture
 def plotting(test, revenue):
