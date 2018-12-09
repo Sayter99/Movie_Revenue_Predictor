@@ -40,3 +40,4 @@ def KMeansClustering(X, clusters):
     kmeans = kmeans.fit(X)
     labels = kmeans.predict(X)
     #centroids = kmeans.cluster_centers_
+    return labels
