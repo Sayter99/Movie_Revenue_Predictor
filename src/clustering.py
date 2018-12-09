@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.cluster import DBSCAN
+from sklearn.cluster import KMeans
 
 import matplotlib.pyplot as plt
 
@@ -34,6 +35,8 @@ def DBSCANClustering(X, peps, pmin_sample):
     print('Estimated number of clusters: %d' % n_clusters_)
     print('Estimated number of noise points: %d' % n_noise_)
 
-    # Black removed and is used for noise instead.
-
-
+def KMeansClustering(X, clusters):
+    kmeans = KMeans(n_clusters=clusters)
+    kmeans = kmeans.fit(X)
+    labels = kmeans.predict(X)
+    #centroids = kmeans.cluster_centers_
