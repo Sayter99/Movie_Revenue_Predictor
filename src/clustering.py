@@ -34,6 +34,7 @@ def DBSCANClustering(X, peps, pmin_sample):
 
     print('Estimated number of clusters: %d' % n_clusters_)
     print('Estimated number of noise points: %d' % n_noise_)
+    return labels
 
 def KMeansClustering(X, clusters):
     kmeans = KMeans(n_clusters=clusters)

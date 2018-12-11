@@ -80,12 +80,26 @@ def preprocess():
         df.iloc[:, 1:].to_csv('datasets/preprocessed.csv')
         pass
 
+def findOutliers(df):
+    X = df['director_hashtags'].values.reshape(-1, 1).tolist()
+    labelList = clustering.DBSCANClustering(X, 94000, 200)
+    for i in range(len(labelList)):
+        if labelList[i] == -1:
+            print(i)
+            print(df['crew'].iloc[i])
+            # print(df['cast'].iloc[i].split(',')[0]) # switch from 0, 1, 2
+
 # preprocess()
 
 df = pd.read_csv("datasets/preprocessed.csv")
 # Based on the different column in array(a1, a2, genre_point......)
-#X = df['genre_point'].values.reshape(-1, 1).tolist()
-#clustering.DBSCANClustering(X, 0.05, 200)
+# findOutliers(df)
+
+
+#action1_hashtags: Rain, Divine
+#action2_hashtags: Astro, Jr.
+#action3_hashtags: Vanity, Ninja, Pink
+#director_hashtags: McG
 
 X_Attributes = ['budget', 'actor1_hashtags', 'actor2_hashtags',
                 'actor3_hashtags', 'director_hashtags', 'genre_point',
@@ -93,13 +107,13 @@ X_Attributes = ['budget', 'actor1_hashtags', 'actor2_hashtags',
 
 Y_Attributes = ['revenue']
 
-train, test = train_test_split(df, test_size=0.08)
+# train, test = train_test_split(df, test_size=0.08)
 #SVMClassifier = classification.SVMClassification(train, X_Attributes, Y_Attributes)
 #test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
 #print(SVMClassifier.predict(test_list)-real_revenue)
 
 #Bagging, Boosting, 0 = DecisionTreeClassifier, 1 = MLPClassifier, 2 = svm, 3 = Bayesian
-MultiLayerClassifier = classification.BoostingClassification(train, X_Attributes, Y_Attributes, 4)
-test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
-test_result = MultiLayerClassifier.predict(test_list)
-classification.plotting(test_result, real_revenue)
+#MultiLayerClassifier = classification.BoostingClassification(train, X_Attributes, Y_Attributes, 4)
+# test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
+# test_result = MultiLayerClassifier.predict(test_list)
+# classification.plotting(test_result, real_revenue)
