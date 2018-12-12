@@ -5,6 +5,7 @@ import preprocessing
 import clustering
 import classification
 import sys
+import math
 from sklearn.model_selection import train_test_split
 from utilities.instagram_data import AcquireJson
 from pathlib import Path
@@ -98,7 +99,7 @@ def generateClusteredCSV():
     preprocessed = Path('datasets/preprocessed.csv')
     clustered = Path('datasets/clustered.csv')
     if not preprocessed.exists():
-        pass
+        return None
     if not clustered.exists():
         # clustering all columns by kmeans clustering
         df = pd.read_csv("datasets/preprocessed.csv")
@@ -118,35 +119,75 @@ def generateClusteredCSV():
             #final_df[X_Attributes[i]] = pd.Series(kmeans_labels[i]).values
             #final_df[X_Attributes[i]] = (df[X_Attributes[i]] - df[X_Attributes[i]].min())/(df[X_Attributes[i]].max() - df[X_Attributes[i]].min())
         final_df['revenue'] = pd.Series(kmeans_labels[-1]).values
+        #final_df['revenue'] = df['revenue']
         final_df.to_csv('datasets/clustered.csv')
 
 def classificationError(test_result, real_revenue):
     error = 0
+    diff = 0
     for i in range(len(test_result)):
         if test_result[i] != real_revenue[i]:
             error = error + 1
-        print("test: " + str(test_result[i]) + " real: " + str(real_revenue[i]))
+            diff = diff + abs(test_result[i] - real_revenue[i])
     print("errors: " + str(error))
     print("total: " + str(len(test_result)))
+    print("diff: " + str(diff))
+    return error, len(test_result), diff
 
-def trainAndTest(df, method, plotting):
+def rmseError(test_result, real_revenue):
+    diff = 0
+    for i in range(len(test_result)):
+        if test_result[i] != real_revenue[i]:
+            diff = diff + (test_result[i] - real_revenue[i])*(test_result[i] - real_revenue[i])
+    return math.sqrt(diff/len(test_result))
+
+def trainAndTest(df, method, plotting, eval):
     train, test = train_test_split(df, test_size=0.08)
     if method == 0: # single classifier
-        classifier = classification.SVMClassification(train, X_Attributes, Y_Attributes)
+        classifier = classification.RandomforestClassification(train, X_Attributes, Y_Attributes)
         test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
         test_result = classifier.predict(test_list)
         if plotting == True:
             classification.plotting(test_result, real_revenue)
-        classificationError(test_result, real_revenue)
+        if eval == 0:
+            return classificationError(test_result, real_revenue)
+        else:
+            return rmseError(test_result, real_revenue)
     elif method == 1: # boosting or bagging
         classifier = classification.BoostingClassification(train, X_Attributes, Y_Attributes, 4)
         test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
         test_result = classifier.predict(test_list)
         if plotting == True:
             classification.plotting(test_result, real_revenue)
-        classificationError(test_result, real_revenue)
+        if eval == 0:
+            return classificationError(test_result, real_revenue)
+        else:
+            return rmseError(test_result, real_revenue)
+    
+def classificationTest():
+    # err, total, diff = trainAndTest(df, 1, True)
+    df = pd.read_csv('datasets/clustered.csv')
+    test_times = 5
+    err_t = 0
+    diff_t = 0
+    total = 0
+    for i in range(test_times):
+        err, total, diff = trainAndTest(df, 1, False, 0)
+        err_t = err_t + err
+        diff_t = diff_t + diff
+    print('avg correctness: ' + str(((total - (err_t/test_times))/total)))
+    print('avg diff: ' + str((diff_t/test_times/total)))
+
+def RMSETest():
+    df = pd.read_csv('datasets/noclustered.csv')
+    test_times = 1
+    err_t = 0
+    for i in range(test_times):
+        rmse = trainAndTest(df, 0, True, 1)
+        err_t = err_t + rmse
+    print('RMSE: ' + str(err_t/test_times))
 
 preprocess()
 generateClusteredCSV()
-df = pd.read_csv('datasets/clustered.csv')
-trainAndTest(df, 1, True)
+classificationTest()
+#RMSETest()

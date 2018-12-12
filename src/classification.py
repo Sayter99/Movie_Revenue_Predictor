@@ -37,7 +37,7 @@ def chooseBoostingMethod(number):
     elif number == 3:
         return ExtraTreesClassifier(n_estimators=10, n_jobs=7)
     elif number == 4:
-        return RandomForestClassifier(n_estimators=35)
+        return RandomForestClassifier(n_estimators=25)
 
 def generateXYLists(df, x_attributes, y_attributes):
     length = len(df[x_attributes[0]])
