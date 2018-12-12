@@ -81,6 +81,7 @@ def preprocess():
         pass
 
 def findOutliers(df):
+    # Based on the different column in array(a1, a2, genre_point......)
     X = df['director_hashtags'].values.reshape(-1, 1).tolist()
     labelList = clustering.DBSCANClustering(X, 94000, 200)
     for i in range(len(labelList)):
@@ -89,31 +90,53 @@ def findOutliers(df):
             print(df['crew'].iloc[i])
             # print(df['cast'].iloc[i].split(',')[0]) # switch from 0, 1, 2
 
-# preprocess()
+def classificationError(test_result, real_revenue):
+    error = 0
+    for i in range(len(test_result)):
+        if test_result[i] != real_revenue[i]:
+            error = error + 1
+        print("test: " + str(test_result[i]) + " real: " + str(real_revenue[i]))
+    print("errors: " + str(error))
+    print("total: " + str(len(test_result)))
 
-df = pd.read_csv("datasets/preprocessed.csv")
-# Based on the different column in array(a1, a2, genre_point......)
-# findOutliers(df)
-
-
-#action1_hashtags: Rain, Divine
-#action2_hashtags: Astro, Jr.
-#action3_hashtags: Vanity, Ninja, Pink
-#director_hashtags: McG
+preprocess()
 
 X_Attributes = ['budget', 'actor1_hashtags', 'actor2_hashtags',
                 'actor3_hashtags', 'director_hashtags', 'genre_point',
                 'director_point', 'actor_point']
-
 Y_Attributes = ['revenue']
 
-# train, test = train_test_split(df, test_size=0.08)
-#SVMClassifier = classification.SVMClassification(train, X_Attributes, Y_Attributes)
-#test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
-#print(SVMClassifier.predict(test_list)-real_revenue)
+# clustering all columns by kmeans clustering
+clustered = Path('datasets/clustered.csv')
+if not clustered.exists():
+    df = pd.read_csv("datasets/preprocessed.csv")
+    # findOutliers(df)
+    df = df[(df['id'] != 22832) & (df['id'] != 692) & (df['id'] != 14736) & (df['id'] != 238603) &
+            (df['id'] != 10117) & (df['id'] != 198184) & (df['id'] != 65759) & (df['id'] != 4327) &
+            (df['id'] != 59962) & (df['id'] != 11170)]
+    kmeans_labels = []
+    for attribute in X_Attributes:
+        X = df[attribute].values.reshape(-1, 1).tolist()
+        kmeans_labels.append(clustering.KMeansClustering(X, 30))
+    X = df['revenue'].values.reshape(-1, 1).tolist()
+    kmeans_labels.append(clustering.KMeansClustering(X, 5))
+    final_df = pd.DataFrame()
+    for i in range(len(X_Attributes)):
+        #final_df[X_Attributes[i]] = pd.Series(kmeans_labels[i]).values
+        final_df[X_Attributes[i]] = df[X_Attributes[i]]
+    final_df['revenue'] = pd.Series(kmeans_labels[-1]).values
+    final_df.to_csv('datasets/clustered.csv')
 
-#Bagging, Boosting, 0 = DecisionTreeClassifier, 1 = MLPClassifier, 2 = svm, 3 = Bayesian
-#MultiLayerClassifier = classification.BoostingClassification(train, X_Attributes, Y_Attributes, 4)
+df = pd.read_csv('datasets/clustered.csv')
+
+train, test = train_test_split(df, test_size=0.08)
+# SVMClassifier = classification.SVMClassification(train, X_Attributes, Y_Attributes)
 # test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
-# test_result = MultiLayerClassifier.predict(test_list)
-# classification.plotting(test_result, real_revenue)
+# print(SVMClassifier.predict(test_list)-real_revenue)
+
+# Bagging, Boosting, 0 = DecisionTreeClassifier, 1 = MLPClassifier, 2 = svm, 3 = Bayesian, 4 = RandomForest
+MultiLayerClassifier = classification.BoostingClassification(train, X_Attributes, Y_Attributes, 4)
+test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
+test_result = MultiLayerClassifier.predict(test_list)
+classification.plotting(test_result, real_revenue)
+classificationError(test_result, real_revenue)

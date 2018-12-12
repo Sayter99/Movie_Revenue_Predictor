@@ -73,7 +73,7 @@ def BaggingClassification(df, x_attributes, y_attributes, classifier):
     x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
     #Change classification algorithm in here
     cart = chooseMethod(classifier)
-    bagging = BaggingClassifier(base_estimator=cart, max_samples=0.6, max_features=0.5).fit(x_list, y_list)
+    bagging = BaggingClassifier(base_estimator=cart, max_samples=0.5, max_features=0.5).fit(x_list, y_list)
     #bagging = BaggingClassifier(KNeighborsClassifier(),max_samples=0.5, max_features=0.5).fit(x_list, y_list)
     return bagging
 
@@ -81,7 +81,7 @@ def BaggingClassification(df, x_attributes, y_attributes, classifier):
 def BoostingClassification(df, x_attributes, y_attributes, classifier):
     x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
     cart = chooseMethod(classifier)
-    clf = AdaBoostClassifier(base_estimator=cart, n_estimators=8).fit(x_list, y_list)
+    clf = AdaBoostClassifier(base_estimator=cart, n_estimators=10).fit(x_list, y_list)
     return clf
 
 #RandomForest-Algorithm
