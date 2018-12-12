@@ -25,19 +25,19 @@ def chooseBaggingMethod(number):
     elif number == 3:
         return KNeighborsClassifier()
     elif number == 4:
-        return RandomForestClassifier(n_estimators=18)
+        return RandomForestClassifier(n_estimators=25)
 
 def chooseBoostingMethod(number):
     if number == 0:
         return DecisionTreeClassifier()
-    # elif number == 1:
-    #     return svm.SVC(probability=True,kernel='linear')
+    elif number == 1:
+        return svm.SVC(probability=True,kernel='linear')
     elif number == 2:
         return SGDClassifier(loss='hinge')
     elif number == 3:
         return ExtraTreesClassifier(n_estimators=10, n_jobs=7)
     elif number == 4:
-        return RandomForestClassifier(n_estimators=20)
+        return RandomForestClassifier(n_estimators=35)
 
 def generateXYLists(df, x_attributes, y_attributes):
     length = len(df[x_attributes[0]])
@@ -96,15 +96,15 @@ def BoostingClassification(df, x_attributes, y_attributes, classifier):
     x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
     cart = chooseBoostingMethod(classifier)
     if classifier == 2:
-        clf = AdaBoostClassifier(base_estimator=cart, n_estimators=10, algorithm='SAMME').fit(x_list, y_list)
+        clf = AdaBoostClassifier(base_estimator=cart, n_estimators=15, algorithm='SAMME').fit(x_list, y_list)
     else:
-        clf = AdaBoostClassifier(base_estimator=cart, n_estimators=10).fit(x_list, y_list)
+        clf = AdaBoostClassifier(base_estimator=cart, n_estimators=15).fit(x_list, y_list)
     return clf
 
 #RandomForest-Algorithm
 def RandomforestClassification(df, x_attributes, y_attributes):
     x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
-    clf = RandomForestClassifier(n_estimators=15).fit(x_list, y_list)
+    clf = RandomForestClassifier(n_estimators=25).fit(x_list, y_list)
     return clf
 
 #Draw a picture
