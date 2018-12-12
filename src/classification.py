@@ -87,7 +87,7 @@ def BaggingClassification(df, x_attributes, y_attributes, classifier):
     x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
     #Change classification algorithm in here
     cart = chooseBaggingMethod(classifier)
-    bagging = BaggingClassifier(base_estimator=cart, max_samples=0.5, max_features=0.5).fit(x_list, y_list)
+    bagging = BaggingClassifier(base_estimator=cart, max_samples=0.6, max_features=0.5).fit(x_list, y_list)
     #bagging = BaggingClassifier(KNeighborsClassifier(),max_samples=0.5, max_features=0.5).fit(x_list, y_list)
     return bagging
 

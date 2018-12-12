@@ -130,20 +130,24 @@ def classificationError(test_result, real_revenue):
     print("errors: " + str(error))
     print("total: " + str(len(test_result)))
 
-def trainAndTest(df, method):
+def trainAndTest(df, method, plotting):
     train, test = train_test_split(df, test_size=0.08)
     if method == 0: # single classifier
-        SVMClassifier = classification.SVMClassification(train, X_Attributes, Y_Attributes)
+        classifier = classification.SVMClassification(train, X_Attributes, Y_Attributes)
         test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
-        print(SVMClassifier.predict(test_list)-real_revenue)
+        test_result = classifier.predict(test_list)
+        if plotting == True:
+            classification.plotting(test_result, real_revenue)
+        classificationError(test_result, real_revenue)
     elif method == 1: # boosting or bagging
-        MultiLayerClassifier = classification.BoostingClassification(train, X_Attributes, Y_Attributes, 4)
+        classifier = classification.BoostingClassification(train, X_Attributes, Y_Attributes, 4)
         test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
-        test_result = MultiLayerClassifier.predict(test_list)
-        classification.plotting(test_result, real_revenue)
+        test_result = classifier.predict(test_list)
+        if plotting == True:
+            classification.plotting(test_result, real_revenue)
         classificationError(test_result, real_revenue)
 
 preprocess()
 generateClusteredCSV()
 df = pd.read_csv('datasets/clustered.csv')
-trainAndTest(df, 1)
+trainAndTest(df, 1, True)
