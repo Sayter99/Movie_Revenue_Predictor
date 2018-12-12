@@ -12,18 +12,32 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import SGDClassifier
+from sklearn.ensemble import ExtraTreesClassifier
 
-def chooseMethod(number):
+def chooseBaggingMethod(number):
     if number == 0:
         return DecisionTreeClassifier()
     elif number == 1:
         return MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
     elif number == 2:
-        return svm.SVC()
+        return svm.SVC(probability=True,kernel='linear')
     elif number == 3:
-        return linear_model.BayesianRidge()
+        return KNeighborsClassifier()
     elif number == 4:
         return RandomForestClassifier(n_estimators=18)
+
+def chooseBoostingMethod(number):
+    if number == 0:
+        return DecisionTreeClassifier()
+    # elif number == 1:
+    #     return svm.SVC(probability=True,kernel='linear')
+    elif number == 2:
+        return SGDClassifier(loss='hinge')
+    elif number == 3:
+        return ExtraTreesClassifier(n_estimators=10, n_jobs=7)
+    elif number == 4:
+        return RandomForestClassifier(n_estimators=20)
 
 def generateXYLists(df, x_attributes, y_attributes):
     length = len(df[x_attributes[0]])
@@ -72,7 +86,7 @@ def BayesianClassification(df, x_attributes, y_attributes):
 def BaggingClassification(df, x_attributes, y_attributes, classifier):
     x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
     #Change classification algorithm in here
-    cart = chooseMethod(classifier)
+    cart = chooseBaggingMethod(classifier)
     bagging = BaggingClassifier(base_estimator=cart, max_samples=0.5, max_features=0.5).fit(x_list, y_list)
     #bagging = BaggingClassifier(KNeighborsClassifier(),max_samples=0.5, max_features=0.5).fit(x_list, y_list)
     return bagging
@@ -80,8 +94,11 @@ def BaggingClassification(df, x_attributes, y_attributes, classifier):
 #Boosting-Algorithm
 def BoostingClassification(df, x_attributes, y_attributes, classifier):
     x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
-    cart = chooseMethod(classifier)
-    clf = AdaBoostClassifier(base_estimator=cart, n_estimators=10).fit(x_list, y_list)
+    cart = chooseBoostingMethod(classifier)
+    if classifier == 2:
+        clf = AdaBoostClassifier(base_estimator=cart, n_estimators=10, algorithm='SAMME').fit(x_list, y_list)
+    else:
+        clf = AdaBoostClassifier(base_estimator=cart, n_estimators=10).fit(x_list, y_list)
     return clf
 
 #RandomForest-Algorithm
