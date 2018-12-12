@@ -39,18 +39,18 @@ def preprocess():
         a.clearCache()
         mergedData['movie_hashtags'] = mergedData['title_x'].apply(lambda x: a.getHashtagCounts(x))
         mergedData.to_csv('datasets/integrated.csv')
-    elif not integratedRefilledCSV.exists():
+    if not integratedRefilledCSV.exists():
         mergedData = pd.read_csv('datasets/integrated.csv')
         mergedData['crew'] = mergedData['crew'].replace(np.nan, 'N/A')
         mergedData.to_csv('datasets/test.csv')
         mergedData.apply(lambda x: a.refillMissingTags(x), axis = 1)
         mergedData.to_csv('datasets/integratedRefilled.csv')
-    elif not gpCSV.exists():
+    if not gpCSV.exists():
         mergedData = pd.read_csv('datasets/integratedRefilled.csv')
         mergedData['genres'] = mergedData['genres'].apply(lambda x: preprocessing.genre2str(x))
         mergedData['production_companies'] = mergedData['production_companies'].apply(lambda x: preprocessing.pc2main(x))
         mergedData.to_csv('datasets/gp.csv')
-    elif not preprocessed.exists():
+    if not preprocessed.exists():
         df = pd.read_csv('datasets/gp.csv')
         df = preprocessing.dropMissingValues(df)
         genres = set(df['genres'].tolist())
@@ -83,7 +83,6 @@ def preprocess():
         dic['N/A'] = 0
         df['actor_point'] = df['cast'].apply(lambda x: dic[x.split(',')[0]] + dic[x.split(',')[1][1:]] + dic[x.split(',')[2][1:]])
         df.iloc[:, 1:].to_csv('datasets/preprocessed.csv')
-        pass
 
 def findOutliers(df):
     # Based on the different column in array(a1, a2, genre_point......)
