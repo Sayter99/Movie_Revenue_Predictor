@@ -6,3 +6,6 @@ __pycache__
 
 # Atom
 .idea
+
+# notebook
+.ipynb_checkpoints
