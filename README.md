@@ -3,8 +3,9 @@ CSCI 5502 Data Mining Final Project
 
 ## Structure
 * **datasets**: store all csv files generated from original TMDb datasets
-* **notebook**: Jupyter notebooks. Mainly used for analyzing correlations between attributes
+* **notebook**: Jupyter notebooks (mainly used for analyzing correlations between attributes)
 * **src**: source Python 3 files of the system
+* **src/utilities**: program to get Instagram hashtags (program not relate to core functions)
 
 ## Environment & Dependency
 * Python 3
@@ -20,6 +21,8 @@ The main program is `movie_revenue_predictor.py`. You need to execute this progr
 ![](https://raw.githubusercontent.com/Sayter99/Movie_Revenue_Predictor/master/key_result/diagram/movie_revenue_predictor_diagram.png)
 
 ### Parameters
+
+#### movie_revenue_predictor.py
 There are paramters can be changed to conduct different tests.
 
 ```Python
@@ -28,3 +31,6 @@ plotting = False # plotting classification result or not
 evaluation_method = 0 # 0: classification error 1: RMSE
 test_times = 10 # how many rounds of tests
 ```
+
+#### classification.py
+Users can tune parameters of classifiers in different classifiers.

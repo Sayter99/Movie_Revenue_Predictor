@@ -192,7 +192,7 @@ test_times = 1
 
 preprocess()
 generateClusteredCSV()
-#classificationTest(test_times, classification_method, plotting, evaluation_method)
+classificationTest(test_times, classification_method, plotting, evaluation_method)
 
 evaluation_method = 1 # RMSE
 RMSETest(test_times, classification_method, plotting, evaluation_method)
