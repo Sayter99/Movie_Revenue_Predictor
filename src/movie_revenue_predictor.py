@@ -139,7 +139,7 @@ def rmseError(test_result, real_revenue):
     for i in range(len(test_result)):
         if test_result[i] != real_revenue[i]:
             diff = diff + (test_result[i] - real_revenue[i])*(test_result[i] - real_revenue[i])
-    return math.sqrt(diff/len(test_result))
+    return math.sqrt(diff/len(test_result))/(max(real_revenue) - min(real_revenue))
 
 def trainAndTest(df, method, plotting, eval):
     train, test = train_test_split(df, test_size=0.08)

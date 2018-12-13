@@ -98,13 +98,13 @@ def BoostingClassification(df, x_attributes, y_attributes, classifier):
     if classifier == 2:
         clf = AdaBoostClassifier(base_estimator=cart, n_estimators=15, algorithm='SAMME').fit(x_list, y_list)
     else:
-        clf = AdaBoostClassifier(base_estimator=cart, n_estimators=15).fit(x_list, y_list)
+        clf = AdaBoostClassifier(base_estimator=cart, n_estimators=5).fit(x_list, y_list)
     return clf
 
 #RandomForest-Algorithm
 def RandomforestClassification(df, x_attributes, y_attributes):
     x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
-    clf = RandomForestClassifier(n_estimators=25).fit(x_list, y_list)
+    clf = RandomForestClassifier(n_estimators=5).fit(x_list, y_list)
     return clf
 
 #Draw a picture
