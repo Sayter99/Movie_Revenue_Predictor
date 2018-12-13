@@ -164,30 +164,35 @@ def trainAndTest(df, method, plotting, eval):
         else:
             return rmseError(test_result, real_revenue)
     
-def classificationTest():
+def classificationTest(test_times, classification_method, plotting, evaluation_method):
     # err, total, diff = trainAndTest(df, 1, True)
     df = pd.read_csv('datasets/clustered.csv')
-    test_times = 5
     err_t = 0
     diff_t = 0
     total = 0
     for i in range(test_times):
-        err, total, diff = trainAndTest(df, 1, False, 0)
+        err, total, diff = trainAndTest(df, classification_method, plotting, evaluation_method)
         err_t = err_t + err
         diff_t = diff_t + diff
     print('avg correctness: ' + str(((total - (err_t/test_times))/total)))
     print('avg diff: ' + str((diff_t/test_times/total)))
 
-def RMSETest():
+def RMSETest(test_times, classification_method, plotting, evaluation_method):
     df = pd.read_csv('datasets/noclustered.csv')
-    test_times = 1
     err_t = 0
     for i in range(test_times):
-        rmse = trainAndTest(df, 0, True, 1)
+        rmse = trainAndTest(df, classification_method, plotting, evaluation_method)
         err_t = err_t + rmse
     print('RMSE: ' + str(err_t/test_times))
 
+classification_method = 1 # boosting
+plotting = False # don't plot results
+evaluation_method = 0 # class
+test_times = 1
+
 preprocess()
 generateClusteredCSV()
-classificationTest()
-#RMSETest()
+#classificationTest(test_times, classification_method, plotting, evaluation_method)
+
+evaluation_method = 1 # RMSE
+RMSETest(test_times, classification_method, plotting, evaluation_method)
