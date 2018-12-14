@@ -15,6 +15,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import SGDClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.naive_bayes import BernoulliNB
+from sklearn.naive_bayes import GaussianNB
 
 def chooseBaggingMethod(number):
     if number == 0:
@@ -22,7 +23,7 @@ def chooseBaggingMethod(number):
     elif number == 1:
         return MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
     elif number == 2:
-        return BernoulliNB()
+        return GaussianNB()
     elif number == 3:
         return KNeighborsClassifier()
     elif number == 4:
@@ -32,7 +33,7 @@ def chooseBoostingMethod(number):
     if number == 0:
         return DecisionTreeClassifier()
     elif number == 1:
-        return BernoulliNB()
+        return GaussianNB()
     elif number == 2:
         return SGDClassifier(loss='hinge')
     elif number == 3:
@@ -79,7 +80,7 @@ def DecisionTreeClassification(df, x_attributes, y_attributes):
 #Bayes-Algorithm
 def BayesianClassification(df, x_attributes, y_attributes):
     x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
-    reg = BernoulliNB()
+    reg = GaussianNB()
     reg.fit(x_list, y_list)
     return reg
 

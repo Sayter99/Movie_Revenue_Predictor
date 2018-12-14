@@ -185,8 +185,8 @@ def RMSETest(test_times, classification_method, plotting, evaluation_method):
         err_t = err_t + rmse
     print('RMSE: ' + str(err_t/test_times))
 
-classification_method = 1 # boosting
-plotting = False # don't plot results
+classification_method = 0 # boosting
+plotting = True # don't plot results
 evaluation_method = 0 # class
 test_times = 1
 
