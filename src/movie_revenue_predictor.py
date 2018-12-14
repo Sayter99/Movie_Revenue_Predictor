@@ -144,7 +144,7 @@ def rmseError(test_result, real_revenue):
 def trainAndTest(df, method, plotting, eval):
     train, test = train_test_split(df, test_size=0.08)
     if method == 0: # single classifier
-        classifier = classification.BayesianClassification(train, X_Attributes, Y_Attributes)
+        classifier = classification.DecisionTreeClassification(train, X_Attributes, Y_Attributes)
         test_list, real_revenue = classification.generateXYLists(test, X_Attributes, Y_Attributes)
         test_result = classifier.predict(test_list)
         if plotting == True:
