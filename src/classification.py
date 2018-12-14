@@ -14,6 +14,7 @@ from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import SGDClassifier
 from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.naive_bayes import BernoulliNB
 
 def chooseBaggingMethod(number):
     if number == 0:
@@ -21,7 +22,7 @@ def chooseBaggingMethod(number):
     elif number == 1:
         return MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
     elif number == 2:
-        return svm.SVC(probability=True,kernel='linear')
+        return BernoulliNB()
     elif number == 3:
         return KNeighborsClassifier()
     elif number == 4:
@@ -31,7 +32,7 @@ def chooseBoostingMethod(number):
     if number == 0:
         return DecisionTreeClassifier()
     elif number == 1:
-        return svm.SVC(probability=True,kernel='linear')
+        return BernoulliNB()
     elif number == 2:
         return SGDClassifier(loss='hinge')
     elif number == 3:
@@ -78,7 +79,7 @@ def DecisionTreeClassification(df, x_attributes, y_attributes):
 #Bayes-Algorithm
 def BayesianClassification(df, x_attributes, y_attributes):
     x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
-    reg = linear_model.BayesianRidge()
+    reg = BernoulliNB()
     reg.fit(x_list, y_list)
     return reg
 
@@ -95,10 +96,7 @@ def BaggingClassification(df, x_attributes, y_attributes, classifier):
 def BoostingClassification(df, x_attributes, y_attributes, classifier):
     x_list, y_list = generateXYLists(df, x_attributes, y_attributes)
     cart = chooseBoostingMethod(classifier)
-    if classifier == 2:
-        clf = AdaBoostClassifier(base_estimator=cart, n_estimators=15, algorithm='SAMME').fit(x_list, y_list)
-    else:
-        clf = AdaBoostClassifier(base_estimator=cart, n_estimators=15).fit(x_list, y_list)
+    clf = AdaBoostClassifier(base_estimator=cart, n_estimators=15).fit(x_list, y_list)
     return clf
 
 #RandomForest-Algorithm
