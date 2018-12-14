@@ -185,10 +185,10 @@ def RMSETest(test_times, classification_method, plotting, evaluation_method):
         err_t = err_t + rmse
     print('RMSE: ' + str(err_t/test_times))
 
-classification_method = 0 # boosting
+classification_method = 1 # boosting/bagging
 plotting = True # don't plot results
 evaluation_method = 0 # class
-test_times = 1
+test_times = 10
 
 preprocess()
 generateClusteredCSV()
